@@ -1,0 +1,1027 @@
+\documentclass[runningheads,review]{llncs}
+
+\usepackage{amsmath,mathptm,amssymb}
+\usepackage{xargs}
+
+\usepackage{mathpartir}
+\usepackage{mathtools}
+\usepackage{lambda,cc}
+\usepackage[noshare]{vlc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{calc}
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+\usepackage{stmaryrd}
+\usepackage{paralist}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{wrapfig}
+\usepackage[inline]{enumitem}
+\usepackage{pifont}
+\usepackage{comment}
+\usepackage{placeins}
+
+%\citestyle{number}
+
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+
+\input{errd.tex}
+
+% make things look nicer
+\sloppy
+\sloppypar
+
+\newcommand{\cL}{{\cal L}}
+
+\renewcommand{\progind}{0pt}
+\newcommand{\tightbox}[1]{{\setlength{\fboxsep}{0pt}\fbox{\vphantom{(y}#1}}}
+\newcommand{\gbkg}[1]{{\setlength{\fboxsep}{0pt}\colorbox{lightgray}{\vphantom{[y}#1}}}
+\newcommand{\gbkgray}[1]{{\setlength{\fboxsep}{0pt}\underline{\vphantom{[y}#1}}}
+% \newcommand{\gbkgray}[1]{{\setlength{\fboxsep}{0pt}\colorbox{lightgray}{\vphantom{[y}#1}}}
+
+\newcommand{\algoW}{\ensuremath{\mathcal W}}
+
+% For the Type System Section
+\newcommand{\vcst}{\OB{c}}
+\newcommand{\subtt}{\OB{\theta}}
+\newcommand{\unr}{\OB{\eta}}
+
+\newcommand{\lf}{\ensuremath{l}}
+\newcommand{\mt}{\OB{\tau}}
+
+\newcommand{\tv}{\OB{\alpha}}
+\newcommand{\tcst}{\OB{\gamma}}
+\newcommand{\Intl}{\prog{[\Int]}}
+
+\newcommand{\seq}[1]{\ensuremath{\overline{#1}}}
+\newcommand{\allT}[2][\seq{\alpha}]{\OB{\forall #1.#2}}
+\newcommand{\disjoint}[2]{\OB{#1\##2}}
+% \newcommand{\disjoint}[2]{\OB{#1 \not\cap #2}}
+\newcommand{\ftv}{\textit{FV}}
+
+\newcommand{\vt}{\OB{\phi}}
+\newcommand{\CE}{\OB{\Delta}}
+\newcommand{\ce}{\CE}
+\newcommand{\tp}{\OB{\pi}}
+
+\newcommand{\te}{\TypeEnv}
+
+\newcommand{\andSym}{\ensuremath{\wedge}}
+\newcommand{\tyeqpi}[3][\pi]{\ensuremath{#2 \tyeqSym_{#1} #3}}
+\newcommand{\tyeqConstraint}[2]{\ensuremath{#1 \tyeqSym^? #2}}
+
+\newcommandx{\alltC}[3][1=\alpha,2=\cst]{\ensuremath{\forall #1.#2 \Rightarrow #3}}
+
+\newcommand{\tpf}{\ensuremath{\tp_1}}
+\newcommand{\tps}{\ensuremath{\tp_2}}
+\newcommand{\cef}{\ensuremath{\ce_1}}
+\newcommand{\ces}{\ensuremath{\ce_2}}
+
+%\renewcommand{\Bool}{\prog{Bo}}
+
+\newcommand{\freshdim}[1]{\ensuremath{#1 \text{ fresh}}}
+\newcommand{\freshvar}[1]{\ensuremath{#1 \text{ fresh}}}
+\newcommand{\multiSym}{\ensuremath{\otimes}}
+\newcommand{\multi}[2]{\ensuremath{#1 \multiSym #2}}
+
+\input{macros.tex}
+
+% for rounding numbers
+\newcommand{\shownum}[1]{\round{\fpeval{100*#1}}}
+
+%\setcitestyle{numbers}
+
+\begin{document}
+
+\title{Gradual Typing Performance, Micro Configurations and Macro Perspectives}
+%\thanks{This work is supported by the National Science Foundation
+%	under the grant CCF-1750886.} }         %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+            %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+\author{Mohammad Wahiduzzaman Khan \and Sheng Chen}
+\institute{UL Lafayette, Lafayette LA 70503, USA \\
+	\email{\{mohammad-wahiduzzaman.khan1,chen\}@louisiana.edu}
+}	
+
+
+\maketitle
+
+\newcommand{\citet}[1]{\cite{#1}}
+
+\vspace{-20pt}
+
+\begin{abstract}
+Static typing and dynamic typing have respective strengths and
+weaknesses, and a language often commits to one typing discipline and inherits the qualities, good or bad. Gradual typing has been
+developed to reconcile these typing disciplines, allowing a single
+program to mix both static and dynamic typing. It protects soundness of 
+typed regions with runtime checks when values flown into them do not
+have required static types. One issue with gradual typing is that
+such checks can incur significant performance overhead. Previous
+work on performance has focused on coarse-grained gradual typing 
+where each module (file) has to be fully typed or untyped. In 
+contrast, the performance of fine-grained gradual typing where each single parameter can be partially-typed (such as specifying the parameter
+as a list without giving element type) has not been investigated.
+
+Motivated by this situation, this paper systematically 
+investigates performance of fine-grained gradual typing
+by studying the performance of more than 1 million programs. 
+These programs are drawn from seven commonly-used benchmarks
+with different types for parameters: some parameters 
+are untyped, some
+are statically typed, and others are partially 
+statically typed. The paper observes many interesting phenomena
+that were previously unknown to the research community. They
+provide insights into future research directions 
+of understanding, predicting, and optimizing gradual 
+typing performance as well as migrating gradual programs towards
+more static. 
+\end{abstract}
+
+%% Keywords
+%% comma separated list
+%\keywords{keyword1, keyword2, keyword3}  %% \keywords is optional
+
+\section{Introduction}
+\label{sec:intro}
+
+In static typing, compilers use types to catch programming errors, 
+provide documentation, and optimize program performance. Static type
+systems are considered as one of the most successful formal methods.
+%
+Static typing also has several shortcomings. For example, it requires
+the program to be complete and free of type errors before 
+it can be run, even though the region that causes the type error
+may not be covered in a certain execution. It also prevents some
+commonly used programming idioms for fast prototyping, such as 
+heterogeneous data structures and reflection. 
+
+Dynamic typing provides the flexibility that not supported by 
+static typing but offer little static error detection. Overall,
+these two typing disciplines are complementary, offering different strengthens 
+and having different weaknesses. In early years, a language chose one typing discipline and committed to it. It is impossible to have the advantage of a typing
+discipline that the language did not choose to follow. For example, 
+it is impossible to have the flexibility of dynamic typing in C, which uses
+static typing and to have static error detection in Python, which uses dynamic typing.
+
+In real-world development, it is often desirable for a single 
+language to support both static and dynamic typing. There have been
+two different typing disciplines developed for this purpose, 
+\emph{optional typing} and \emph{gradual typing}. In both 
+disciplines, type annotations can optionally be added to variables, 
+parameters, and return values to specify their types, allowing for static type checking. However, unannotated code retains the flexibility of dynamic typing, enabling rapid prototyping and exploration without 
+the burden of explicit type declarations. Both have attracted 
+enormous attention, from both industry and academia. 
+
+The main difference between optional typing and gradual typing is that 
+the latter performs runtime type checks while the former does not. 
+There are many advantages of performing runtime type checks, 
+including ensuring the soundness of typed code, early detection of 
+runtime type errors, and precise blaming of code that violates runtime
+errors. The main issue with runtime type checks is, however, such checks
+can significantly slowdown program performance. 
+
+The performance problem has been well known. Several studies
+have conducted in-depth investigations of gradual typing performance~\cite{Takikawa:2016:SGT,Greenman:2019:How-to}. 
+These studies have observed that sound gradual typing incurs
+significant performance overhead, in some case the slowdown 
+could be more than 100 times. However, such studies have focused
+on gradual typing where type additions are supported only
+at the granularity level of modules. Specifically, if developers
+wanted to add type annotations to their codebase, then they have
+to add type annotations to all functions in a module or they have
+to leave the module completely untyped. For a codebase with $n$ modules,
+$2^n$ different \emph{configurations} may be created, where each configuration
+adds type annotations to a certain subset of all $n$ modules. 
+%
+Such a gradual typing system
+has been added to Racket to create Typed Racket.
+
+However, no studies have investigated the performance characteristics
+of \emph{micro} gradual type systems, where type annotations may be added
+to any individual function of a module or even a single parameter. 
+%
+Moreover, in practice, the type for each parameter may be a mix of 
+static and dynamic types, rather than fully dynamic (denoting that the parameter
+is untyped) or fully static (denoting that the full type information for 
+the parameter can be completely decided at compile time). To illustrate,
+consider the function \myreduce\ in Figure~\ref{fig:mixed-annotations}.
+This function takes three parameters and reduces the list (\prog{lst}) 
+into a single value using the function \prog{f} with the initial 
+value \prog{init}. In this example, the parameter \prog{f} has
+a dynamic type, written as \dyn. This type indicates that the type
+of \prog{f} can not be known at compile time, and its usage should
+not be type checked statically. The type for \prog{init} is \Int, 
+which is fully static. The type for \prog{lst}, \prog{List(\dyn)},
+is a partially static type. This type specifies that 
+the parameter \prog{lst} will be used as a list without any restrictions
+on the element type of the list. 
+
+\begin{figure}[t]
+\begin{program}
+def reduce(f:\dyn, lst:List(\dyn), init:Int): 
+  result = init
+  for i in range(len(lst)): 
+    result = f(result,lst[i]) 
+  return result	
+\end{program}
+\caption{A gradual program in Python type hint syntax that mixes
+different kinds of type annotations.}
+\label{fig:mixed-annotations}
+\end{figure}
+
+Without a clear understanding of the performance landscape of 
+micro gradual typing, a few questions remain unanswered. First,
+how to evaluate the performance of micro gradual typing and specific
+benchmarks? The full configuration space of using micro gradual typing
+is very huge. For a program with $n$ parameters, we are able to generate
+$2^n$ configurations, where the type for each parameter is a \dyn\ or a 
+fully static type. We refer to such configurations as \emph{\outlyingConfigs}.
+In addition, we are able to generate more configurations where the type
+for some parameter is a mix of \dyns\ and static types. We refer to such 
+configurations as \emph{\middleConfigs}. For example, \myreduce\ in 
+Figure~\ref{fig:mixed-annotations} is an \middleConfig\ because
+the type for \prog{lst} contains both static type information (\prog{List})
+and a \dyn. However, had we changed the type of \prog{lst} to 
+\prog{\dyn} or \prog{List(List(Int))}, then \myreduce\ is an \outlyingConfig.
+%
+The number of \middleConfigs\ quickly doubles the number of 
+\outlyingConfigs, depending on the type structure of each parameter. 
+For example, if the static type for a parameter is 
+\prog{Tuple(Int,Float,List(Int))}, then in an \outlyingConfig,
+the parameter may be assigned eleven different types, with
+two possibilities for the first component of the tuple, two for the
+second component, and three (\prog{\dyn}, \prog{List(\dyn), 
+\prog{List(Int)}}) for the third component\footnote{$2\times2\times3=12$, 
+but we need to minus one combination whose all components are static.}. 
+
+Given this sheer number of possible configurations, 
+how to measure the performance of gradual programs? It is 
+obviously infeasible to measure all configurations. Sampling
+is therefore necessary. The question is, what sampling strategy
+should be used? Should the samples include both \outlyingConfigs\
+and \middleConfigs\ or \outlyingConfigs\ are sufficiently representative?
+Early work on micro gradual typing performance~\cite{Vitousek:2014:DLS,Vitousek:2017:BTL,Vitousek:2019:OET,Campora:2018:CCH,Campora:2024:TBG} considered only \outlyingConfigs. Should future
+work on micro gradual typing also sample \middleConfigs\ for evaluation?
+
+The second question remains unanswered is, what are desirable type 
+annotations for parameters? This question is closely intertwined 
+with the problem of gradual type migration, which studies the
+challenges and solutions of adding static type annotations to 
+gradual programs. While manually adding type annotations is 
+one possible way for small programs, it does not scale to 
+large programs. Several approaches based on type inference~\cite{Castagna:2019:GTN,Kristensen:2017:TTS,Campora:2020:TTA,Rastogi:2012:IOG,TIS:Chandra:2016,Siek:2008:GTU,Campora:2018:MGT,Migeed:2020:WDG,Phipps:2021:SBG}, 
+dynamic approaches~\cite{Miyazaki:2019:DTI,Cristiani:2021:GTD}, and machine learning based approaches~\cite{mir2022type4py,peng22hityper,pradel2020typewriter,Allamanis_2020}, have been developed. Such approaches often fail to infer most static 
+types for parameters. It is very likely that the user will start from 
+the types added by such type migration tools and make the types more static.
+The questions are then, how diverse are the run times of the configurations 
+when a single parameter is assigned different types, do the performance keep
+on increasing when the type for a parameter becomes more static, does the 
+most static type lead to the best performance? 
+
+%The third unanswered question is, what are good migration strategy? 
+%Making each parameter as static as possible and then move on to next
+%parameter (sequential), or making all parameters about equally static and then 
+%further add static type information to all parameters at around 
+%the same time (parallel)? 
+
+This paper aims to answer these questions through a systematic
+evaluation of around 1.25 configurations drawn from six commonly-used
+benchmarks for gradual typing research. This paper makes the following
+contributions: 
+%
+\begin{enumerate}
+\item It creates a benchmark with around 1.25 configurations. Such configurations
+have fine-grained types. With precise type information and corresponding 
+execution times, it facilitates future research in gradual typing.
+
+\item It studies three research questions concerning the representativeness
+of \outlyingConfigs\ and performance change as parameter types 
+undergo minor changes.
+
+\item Based on the evaluation results, it makes affirmative answers to
+the studied research questions. Specifically, the result reveals that
+\outlyingConfigs\ are not always representative, the performance can
+change radically even with small changes in type annotations, and 
+counter-intuitively, the performance often decreases as parameter
+types become more precise. These answers suggest a better performance
+evaluation method for future work on gradual typing performance.
+They also indicate where further research attention is needed
+to make gradual typing practical. 
+\end{enumerate}
+
+\section{Background}
+\label{sec:bg}
+
+The purpose of gradual typing is to strike a balance between the safety and performance guarantees of static typing and the flexibility and expressiveness of dynamic typing. As such, in gradual typing, a parameter or variable
+may be assigned a static type if the type expectation of the parameter or
+variable can be statically determined and the uses of it need to be 
+statically checked. In contrast, if the type can not be determined 
+statically, then the type should remain dynamic. The absence of
+a type annotation or a \dyn\ for a parameter denotes that the parameter
+has dynamic type. It is also possible that a parameter is
+annotated with a partially static type, as \prog{[Dyn]} for
+\prog{lst} in Figure~\ref{fig:bg:myreducef}. 
+
+A static type annotation for a parameter is a protocol 
+for both the internal and external of the function.
+For the internal of the function, the type specifies 
+the \emph{guarantee} of the type of the parameter to the rest 
+of the function definition. For example, the type
+for \prog{f} indicates that the return type is \Int.
+As a result, inside the function, every call will
+always return a value of type \prog{Int}. For the external
+of the function, the type specifies the \emph{expectation}
+of the corresponding argument to the function. For example,
+when \myreducef\ is called, the first argument must be
+a function type and the first parameter type and the 
+return type of it must be \Int.  
+
+\begin{figure}[t]
+\begin{subfigure}[t]{.49\textwidth}
+\begin{program}
+def \myreducef(f:Function([Int,Dyn],Int),
+              lst:[Dyn], init:Int): 
+    result = init
+    for i in range(len(lst)): 
+        result = f(result,lst[i]) 
+    return result	
+
+def wider(\curWidest:Int, ci:Dyn) -> Int:
+    return max(\curWidest, len(ci))
+
+\listContentNm = \listContent
+\myreducef(wider,\listContentNm,0)
+\end{program}
+\caption{\myreducef, with \prog{lst} type being
+\prog{[Dyn]}}
+\label{fig:bg:myreducef}
+\end{subfigure}
+\ 
+\hfill
+%
+\begin{subfigure}[t]{.46\textwidth}
+\begin{program}
+def \myreducef(f, lst, init):
+
+    result = init
+    for i in range(len(lst)):
+        result = f(result, lst[i])
+    return result : Int => Dyn
+
+def wider(\curWidest, ci):
+    return max(\curWidest, len(ci)) : Dyn => Int
+
+\listContentNm = \listContent
+\myreducef(wider, \listContentNm : Dyn => [Dyn], 0)
+\end{program}
+\caption{Cast inserted version of \myreducef}
+\label{fig:bg:myreducef-cast}
+\end{subfigure}
+
+\vspace{12pt}
+
+\begin{subfigure}[t]{.51\textwidth}
+\begin{program}
+def \myreduces(f:Function([Int,Dyn],Int), 
+             lst:\gbkg{[[Dyn]]}, init:Int): 
+    result = init
+    for i in range(len(lst)): 
+        result = f(result,lst[i]) 
+    return result	
+
+\myreduces(wider,\listContentNm,0)
+\end{program}
+\caption{\myreduces, with \prog{lst} type being \prog{[[Dyn]]}}
+\label{fig:bg:myreduces}
+\end{subfigure}
+\hfill
+%
+\begin{subfigure}[t]{.46\textwidth}
+\begin{program}
+def \myreduces(f, lst, init):
+
+    result = init
+    for i in range(len(lst)):
+        result = f(result, lst[i] : \gbkg{[Dyn] => Dyn})
+    return result : Int => Dyn
+
+\myreduces(wider, \listContentNm : Dyn => \gbkg{[[Dyn]]}, 0)
+\end{program}
+\caption{Cast inserted version of \myreduces}
+\label{fig:bg:myreduces-cast}
+\end{subfigure}
+\caption{Two different versions of \myreduce\ (left)
+that differ by only one parameter type and their 
+corresponding cast-inserted programs (right).
+The function type with two parameters whose
+types are \prog{t1} and \prog{t2} and with return
+type \prog{t3} is written as \prog{Function([t1,t2],t3)}.
+}
+\label{fig:bg:myreduce}
+\end{figure}
+
+The argument may be statically typed and matches 
+the expectation of the parameter type. In this case, 
+no runtime checks are needed. Otherwise, runtime 
+checks will be inserted to protect the type 
+annotations, a notion known as enforcing 
+\emph{type soundness}. 
+%
+To illustrate, 
+consider the execution of the program 
+in Figure~\ref{fig:bg:myreducef}. When a
+gradually-typed program is executed, 
+it is often translated to a program in the
+underlying language with runtime checks
+inserted. For example, the gradually-typed
+language Reticulated 
+Python~\cite{Vitousek:2014:DLS,Vitousek:2017:BTL}
+is translated to Python. The translated program
+for Figure~\ref{fig:bg:myreducef} is given
+in Figure~\ref{fig:bg:myreducef-cast}.
+
+In translating the call of \myreducef\ (the
+last line of Figure~\ref{fig:bg:myreducef}),
+the type expectation of \prog{f} (\prog{Function([Int,Dyn],Int)})
+matches the type of the argument
+since the type of \prog{wider} is also 
+\prog{Function([Int,Dyn],Int)} (see the caption
+of Figure~\ref{fig:bg:myreduce} for an explanation of
+type syntax for function types). As a result, 
+no runtime checks will be inserted for \prog{wider}.
+%
+However, for \prog{lst}, the expectation is
+\prog{[Dyn]} (based on the type annotation for 
+\prog{lst} in the definition of \myreducef),
+and the argument has type \prog{Dyn} (many gradual
+type systems do not assign a static type to a list
+because lists can be heterogeneous). 
+As a result, a runtime check, often called a 
+\emph{cast}, is inserted to make sure that \listContentNm\
+has the expected type for calling \myreducef.
+The cast is written as \prog{\listContentNm : Dyn => [Dyn]},
+expressing that the statically known type of \listContentNm\
+is \prog{Dyn} but it is used in a context that requires
+it to have the type \prog{[Dyn]}. A general form
+of a cast is written as \prog{expr : source\_type => target\_type}. 
+
+Casts may have very different runtime overheads. 
+Basic casts involving primitive types (such as \Int, 
+\Bool, and \prog{Float}) and \dyn\ are very lightweight.
+For example, the cast \prog{e: \dyn\ => \Int} induces very
+little runtime overhead because a single runtime type 
+check (such as \prog{isinstance(e,int)} in Python) 
+suffices to check if the cast will be successful. 
+However, casts involving other types, such as 
+lists and functions, can be very expensive. The reason
+is that such casts can not be verified at where they
+appear. To illustrate, consider a cast
+\prog{f:\dyn\ => \Int\ -> \Bool}. This cast means
+that \prog{f} should return a \Bool\ value whenever it
+is called with an \Int\ value. It is impossible to 
+measure whether \prog{f} satisfies the cast at its occurrence
+location because in dynamic languages a function may 
+return values of
+different types for values of the same type. 
+
+Instead, for such a cast, a proxy needs to be
+created to make sure that it has expected type 
+at each call site. Continuing the example from 
+the previous paragraph, when \prog{f} is called,
+the proxy for \prog{f}
+checks whether the argument has the type \Int\ 
+and the return type of \prog{f} has the type \Bool.
+Creating proxies and checking the argument and 
+return types for each call involves more significant
+overheads. 
+
+Such casts are the main reason that sound gradual 
+typing radically slows down program performance. 
+Earlier work~\cite{Takikawa:2016:SGT} observed
+this phenomenon when types are added 
+to a single module (file). This work investigates
+the impact of changing the type annotation of a
+single parameter on program performance. To 
+illustrate how performance may be affected due to
+a type change, consider the program in 
+Figure~\ref{fig:bg:myreduces}. The only difference (with
+a gray background) 
+compared to Figure~\ref{fig:bg:myreducef} is that 
+the type annotation for \prog{lst} is changed 
+to \prog{[[Dyn]]}. The single type change, however,
+led to the changes of two inserted casts, shown in 
+Figure~\ref{fig:bg:myreduces-cast} with a gray background.
+One of these casts is inside a \prog{for} loop, and it
+in fact induces high overhead for this program. 
+%
+We measured the performance of these programs and observed
+that the performance for program in Figure~\ref{fig:bg:myreduces}
+doubles that in Figure~\ref{fig:bg:myreducef}. 
+
+\section{Benchmarks}
+For the purpose of evaluation we consider \numberofbecnhmark of benchmarks. This benchmarks are mainly adapted from Python performance benchmark suits[\textbf{CITATION}]. In Table Table~\ref{tab:bechamrks} we discus about the details of each benchmark.
+
+\begin{table}[t]
+\begin{center}   
+\caption{Python benchmarks used for performance evaluation.
+% description including Name, Lines of Code, Number of functions, and the number of parameters used in this benchmark, 
+The last column gives the number of configurations generated for 
+the corresponding benchmark.}
+\label{tab:bechamrks}
+\begin{tabular}{|l| c | c |c | c | c |} % <-- Changed to S here.
+
+	\toprule	
+	Benchmark & LOC & \# of functions & \# of pars & \# of typed pars &\# of configurations \\
+	\midrule
+    Monte Carlo & 90 & 4 & 9 & 9 & 93600\\
+ 	Pascal-1 & 70 & 7 & 19 & 15 & 4062\\
+	Pascal-2 & 70 & 7 & 19 & 15 & 98304\\
+	Scimark-1 & 65 & 5 & 22 & 17& 4602\\
+	Scimark-2 & 65 & 5 & 22 & 17& 323070 \\
+	Nbody & 195 & 4 & 21 & 18 & 91525\\
+	Raytrace & 455 & 21 & 94 & 67 & 635040\\
+    Sieve & 56 & 9 & 22 & 21 &  15361\\
+	Chaos & 271 & 22 & 42 & 29 &  6000 \\ 
+
+	\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Each benchmark have been carefully chosen. For example consider the Pascal benchmark.The purpose of this benchmark is to evaluate the efficiency and performance of algorithms and functions related to generating Pascal's triangle and permutations in Python. By implementing various functions such as pascal\_upp, pascal\_low, pascal\_sym, printMatrixes, nextperm, perm3, and main, the benchmark aims to measure the computational complexity and execution time of these operations. One of the functions parameter in Pascal benchmark is 'matrix', which is basically a 2-D array. In gradual type we can type this matrix in 4 different ways, first fully untype or as "Dyn", second List(Dyn), third more precise List(List(Dyn)) finally the most static version List(List(Float)). Based on how we type performance can be significantly impacted. Now consider Scimark benchmark, It has six functions which contains a parameter arr, most static type of arr is Tuple(Int,Int,Int), so basically there are 2\^8 ways we can type this single parameter. Benchmark Sieve has several functions which have a parameter name "st" whose most static type is class type "Stream". Nbody benchmark has two complex type situation which have been used multiple type throughout the program. For example one function parameter name is "pairs" whose most static type looks like "List(Tuple(Tuple(List(Float), List(Float), Float), Tuple(List(Float), List(Float), Float)))". So there can be multiple ways with "Dyn" combinations we can type this paramter. Similarly Monte carlo, Raytrace also have something of complex type of Tuple like the Scimark.  So almost all the chosen benchmark has similar or more complex data types which can be typed in multiple ways.In this paper if any particular benchmark configuration does not have any single "Dyn" type we call them outliers, if any configuration has a single nested Dyn parameter like the one mention above we call them intermediate states. In Figure \ref{fig:description-of-benchmarks} depicts the runtime distribution of each benchmarks configurations.
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Monte_carlo_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Monte_carlo_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Pascal-1_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Pascal-1_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Pascal-2_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Pascal-2_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Scimark-1_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Scimark-1_graphtimes.pdf}
+\end{subfigure}\\
+\caption{Benchmark's configurations run times(seconds) distribution (continued)}
+\label{fig:description-of-benchmarks}
+\end{figure}
+
+\begin{figure}[ht]
+\ContinuedFloat
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Scimark-2_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Scimark-2_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Nbody_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Nbody_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Raytrace_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Raytrace_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Sieve_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Sieve_graphtimes.pdf}
+\end{subfigure}\\
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Chaos_times.pdf}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\linewidth]{benchmark_description/Chaos_graphtimes.pdf}
+\end{subfigure}\\
+\caption{Benchmark's configurations run times(seconds) distribution (continued)}
+\end{figure}
+   
+\section{Evaluation Methodology}
+
+
+\section{Representativeness of \OutlyingConfigs}
+
+Figure \ref{fig:representativeness_distribution} illustrates the temporal distribution of runtime for outlier and intermediate configurations. The kernel density (KD) plot demonstrates the divergence in runtime characteristics between intermediate and outlier configurations. Inspection of the KD plots reveals the multimodal nature of both intermediate and outlier distributions, characterized by the presence of multiple peaks. Additionally, the box plots provide insights into the central tendency of each distribution. Notably, outlier configurations exhibit a tendency to cluster closer to their mean, while intermediate configurations display numerous outliers distributed far from the mean.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Monte_carlo_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1//Monte_carlo_BOX.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Pascal-1_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Pascal-1_BOX.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Pascal-2_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Pascal-2_BOX.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sciamrk-1_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sciamrk-1_BOX.pdf}
+\end{subfigure}\\
+\caption{Benchmark's Intermediate and Outliers Timing Distribution (Group 1)}
+\label{fig:representativeness_distribution_group1}
+\end{figure}
+
+\begin{figure}[t]
+\ContinuedFloat
+\centering
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sciamrk-2_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sciamrk-2_BOX.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Raytrace_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Raytrace_Box.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sieve_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Sieve_BOX.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Chaos_KD.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[width=\linewidth]{scenario1/Chaos_BOX.pdf}
+\end{subfigure}\\
+\caption{Benchmark's Intermediate and Outliers Timing Distribution (Group 2)}
+\label{fig:representativeness_distribution_group2}
+\end{figure}
+
+
+\FloatBarrier 
+
+\section{Time Variations of \MiddleConfigs}
+\begin{comment}
+Dr Sheng, please add How we calculate the group1diif and why we are calculating it.tent...
+\end{comment}
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{images/intermediate.pdf}
+\caption{The lattice, which has 8 \outlyingConfigs\ 
+(\textcolor{blue}{\circled{1}} through \confIndx{8}),
+for a program with three parameters. Each configuration is
+represented as three ovals, which each oval indicates if the
+corresponding parameter is typed (filled) or not (unfilled).
+Each solid line connects a less precise configuration (lower in 
+the lattice) to a more precise one (higher in the lattice). 
+Assume the fully static type of the first parameter is \prog{[[Float]]},
+two \middleConfigs, one with the type of first parameter 
+being \prog{[Dyn]} (\confIndx{9}) and the other being \prog{[[Dyn]]} (\confIndx{A}),
+may be added between \confIndx{4} and \confIndx{7}.
+Likewise, assuming the full static type of the second parameter
+is \prog{Tuple(Int,Float,Bool)}, then eight \middleConfigs\ (\confIndx{B}
+through \confIndx{G}) can be generated between \confIndx{2} and \confIndx{5}.
+In \confIndx{B} through \confIndx{G}, the three ovals in the middle indicate
+whether the three components of the second parameter have static types or not.
+}
+\label{fig:refining}
+\end{figure}
+
+This section investigates how diverse are execution times of 
+\middleConfigs\ that differ by type annotations for a few parameters.
+Understanding the diversity is an important problem that has 
+both practical and theoretical implications. 
+%
+
+In practice, type migrations are often done in small steps 
+or with the help of type migration tools. It is often common
+that such tools infer only part of the type information, infer
+too specific type, or contain incorrect types, particularly
+when the static type is complex. In this case, it is likely that
+the developer will fix the type annotations, 
+make them more specific, or change them to new types. 
+%
+From the performance perspective, there are several related questions.
+First, how such changes will affect the performance of the program? 
+Will the performance largely stay the same because the change of
+the type is relatively minor compared to the type annotations 
+for the whole program
+or will such a small change already lead to significant performance 
+swings? 
+
+Second, if the performance indeed changes radically due to such
+small type changes, is the performance getting better or worse?
+The answer to this question provides useful guidance for type migration.
+For example, if slightly making the type of a parameter more specific
+decreases the performance, should the user make it even more specific
+or reverse the type addition 
+to restore the performance?
+
+%Third, is there any correlation between the type change 
+%of a parameter and its context from performance perspective?
+%Does the performance change more radically if the context 
+%has certain types when the type for a parameter changes?
+%%
+%Fourth, how do type changes of multiple parameters interact
+%with each other? Does the impact of each type change
+%on performance solidify or cancel out? If the performance
+%gets worse as a type annotation changes, can the performance 
+%be restored or be improved by changing the type for a different
+%parameter? 
+
+The answers to these questions can help both the users and 
+researchers of gradual typing. For the former, these answers 
+will help develop useful guidance with program migration, making
+programs more static while aware of the performance landscape.
+For the latter, these answers reveal the real challenges of
+harmonizing program migration and performance issues, indicating
+where the research is needed to make gradual typing practical.
+
+To answer these questions, we need to first find out groups
+that have different type annotations for a specific number
+of parameters. To illustrate, consider the lattice in Figure~\ref{fig:refining}.
+From this lattice, we can extract two groups. The first group contains
+four configurations (\confIndx{4}, \confIndx{7}, \confIndx{9},
+and \confIndx{A}), differing types in the first parameter. 
+%
+The second group contains 8 configurations (\confIndx{2}, 
+\confIndx{5}, and \confIndx{B} through \confIndx{G}), differing
+types in the second parameter. 
+%
+We also extract groups whose members differ by tye annotations 
+for two and three parameters. Such groups allow us to 
+
+%The importance of understanding performance diversity, can the user 
+%arbitrarily add type annotations, if the performance is not good, can
+%the user keep on making the type precise to improve performance, what
+%are the parameters whose type difference vary performance a lot?
+
+%The research currently has mostly treat migration and performance 
+%separately, 
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Monte_carlo_variance.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Pascal-1_variance.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Pascal-2_variance.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Scimark-1_variance.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Scimark-2_variance.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Nbody_variance.pdf}
+\end{subfigure}\\
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Raytrace_variance.pdf}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\linewidth}
+\includegraphics[width=\linewidth]{scenario2/Sieve_variance.pdf}
+\end{subfigure}
+\caption{Benchmark's group variance distribution}
+\label{fig:benchmarkgroupvariance}
+\end{figure}
+Inorder to measure how much each group differs from each other we use variance matrices. Variance is a measure used to understand how spread out the individual runtimes are within each group of programs. It gives us an idea of how much the runtimes deviate from the average or mean runtime for that group.Initially, the process entails computing the mean runtime for each group of programs. This is achieved by summing up all the runtimes within a group and dividing the total by the number of runtimes in that group. Subsequently, for each individual runtime in the group, the squared differences between that runtime and the mean runtime are determined. Squaring these differences ensures that negative and positive deviations do not cancel each other out, providing a more accurate representation of dispersion.Following this, the average of all the squared differences calculated in the previous step is determined. This average value represents the variance of the runtimes within the group. Interpretation of the variance involves understanding that a larger variance indicates greater spread or variability of runtimes from the mean, suggesting a less consistent or stable performance across the programs within the group. Conversely, a smaller variance signifies that the runtimes are closer to the mean, indicating less variability and potentially more consistent performance. Figure \ref{fig:benchmarkgroupvariance} illustrates the variances within each benchmark group. Upon summarization, it becomes evident that certain benchmarks groups exhibit notably higher variances compared to others. For instance, despite having similar code structures, Pascal-1 and Pascal-2 demonstrate significantly different variances, with Pascal-1 displaying a notably higher variance. Conversely, in the case of Scimark-1 and Scimark-2, which also share similar code structures, Scimark-1 exhibits considerably higher runtime than Scimark-2; however, upon closer examination of the variance plot, it is apparent that Scimark-2 possesses the highest variance. Therefore, it can be confidently concluded that variances are not solely dependent on the overall runtime of benchmark configurations but rather on the specific variances within each benchmark group. 
+
+
+
+\begin{table}[t]
+\begin{center}   
+\caption{Benchmarks groups variance information}
+\label{tab:bechamrksgroupvariancedesc}
+\begin{tabular}{|l| c | c |c | c | c |} % <-- Changed to S here.
+
+	\toprule	
+	Benchmark & \# of Groups & Avg group size & min variance & average variance & max variance\\
+	\midrule
+    Monte Carlo & 57120 & 8 &  0.0 & 2.58 & 61.976 \\
+	Pascal-1 & 4096 & 4 & 0.0 & 30.97 & 5153.21 \\
+	Pascal-2 & 110376 & 7 & 0 & 0.27 & 7.33\\
+	Scimark-1 & 8226 & 3 & 0.0 & 0.83 & 67.57 \\    
+	Scimark-2 & 446875 & 5 & 0.0 & 3.56 & 2700.23 \\
+	Nbody & 43969 & 8 & 0.0  & 2.87 & 2170.60 \\
+	Raytrace & 5856 & 6 & 0.0  & 0.06 & 0.96 \\
+    Sieve & 71888 & 3 & 0.0  & 0.82 & 14.62 \\
+
+
+	\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[t]
+\begin{center}   
+\caption{Benchmarks group ordering information}
+\label{tab:bechamrksgroupordering}
+\begin{tabular}{|l| c | c |c | c | c |} % <-- Changed to S here.
+
+	\toprule	
+	Benchmark & \# of Groups & Avg group size & \% of increasing & \% of decreasing &\% of neutral \\
+	\midrule
+    Monte Carlo & 57120 & 8 &  34.69\% & 21.26\% & 44.04\% \\
+	Pascal-1 & 4096 & 4 & 36.54\% & 16.62\% & 46.82\% \\
+	Pascal-2 & 110376 & 7 & 12.15\% & 16.28\% & 71.56\% \\
+	Scimark-1 & 8226 & 3 & 66.44\% & 21.34\% & 12.20\% \\
+	Scimark-2 & 446875 & 5 & 11.29\% & 41.89\% & 46.81\% \\
+	Scimark-2(2-Diff) & 524424 & 16 & 1.31\% & 3.67\% & 95.01\% \\
+	Scimark-2(3-Diff) & 482031 & 16 & 0.016\% & 0.11\% & 99.87\% \\
+    Nbody & 43969 & 8 & 67.18\%  & 4.55\% & 28.26\% \\
+	Raytrace & 10061 & 6 & 32.85\%  & 14.34\% &  52.79\% \\
+	Raytrace(2-Diff) & 7182 & 24 & 1.07\%  & 1.03\% & 97.90\% \\
+	Raytrace(3-Diff) & 14806 & 57 & 0.0\%  & 0.0\% & 100.0\% \\
+	Sieve & 71888 & 3 & 88.37\% & 11.45\% & 0.16\% \\
+	\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+%1. How often are variance larger than a certain percentage?
+%
+%We can use a table or use a box plot.
+%
+%Columns are the benchmark name, percentage of all groups 
+%whose variance are greater than a certain number. 
+%Let's also include a column that gives the times of 
+%the group that has biggest variance.
+%
+%2. Given a group, how the times change? Are they decreasing,
+%increasing, or a mix? We can create a table, columns include
+%benchmark name, the group with largest time differences, 
+%the percentages of groups the running time increases, 
+%decreases, or a mix. 
+%
+%3. When a group has big variation of running time. 
+%Establish a connection with how the type annotations of
+%other parameters look like. 
+%
+%Talking about digging into the examples to see why 
+%variances are big for some configurations.
+%
+%4. Under what conditions, times are similar?
+%We can look at cast-inserted programs. But ideally
+%we can find something based on the source programs?
+%
+%The above is about groups that has type difference in
+%only one parameter. We can consider differences in two or
+%three parameters.
+
+\section{Related Work}
+
+This paper studies the performance of micro gradual typing,
+where a partial or full static type annotation may be given
+to a parameter, return value, or variable. Micro
+gradual typing has been used in Reticulated Python~\cite{Vitousek:2017:BTL,Vitousek:2014:DLS},
+Grift~\cite{Kuhlenschmidt:2019:TEG}, and many others~\cite{Rastogi:2015:SET,Siek:2015:MRE}. 
+%
+There is another kind of gradual typing, adopted by Typed
+Racket~\cite{Tobin-Hochstadt:2006:IMS}, where the decision 
+of whether adding type annotation
+or not is made at the granularity of a module. 
+Several studies~\cite{Takikawa:2016:SGT,Greenman:2019:How-to} 
+have investigated the performance
+of this kind of gradual typing. A benchmark for this kind
+of gradual typing research has also been developed~\cite{Greenman:2023:GTP}.
+The goal of these papers are thus quite different from ours.
+Moreover, this paper also investigates representativeness
+of \outlyingConfigs\ and how performance changes as the
+type for a single parameter experiences changes, which
+are unique to micro gradual typing only. 
+
+The overhead of gradual typing is due to the checks
+inserted for protecting typed regions. Such checks 
+are performed at runtime. In contrast, 
+\emph{optional typing} uses type annotations for performing
+static type checking to catch more programming mistakes
+before program are run. TypeScript~\cite{Feldthaus:2014:CCT},
+Flow~\cite{Chaudhuri:2017:FPT}, and type hints for 
+Python\footnote{\url{https://docs.python.org/3/library/typing.html}} 
+fall in this approach. 
+%
+To illustrate the difference between optional and gradual typing,
+consider the expression \prog{reduce1(add,['c','d'],0)} where
+\prog{add} is defined as follows.
+%
+\begin{program}
+def add(a:Int, b:Int) -> Int:
+    return a+b
+\end{program}
+%
+In both optional typing and gradual typing, 
+no static type errors are detected in the expression
+\prog{reduce1(add,['a','b'],0)}. However, the behavior
+of runtime error reporting is very different. 
+In optional typing, the runtime error is reported inside the
+definition of \prog{add}, when \prog{a} receives the
+value 0 and \prog{b} receives the value \prog{'c'}. 
+%
+In gradual typing, the type error is reported at
+\prog{lst[i]} within \myreducef\ because \prog{lst[i]}
+has the type \prog{String} while the parameter type of
+\prog{add} is \Int. An important design principle
+of gradual typing is that well-typed programs should
+not be blamed~\cite{Siek:2015:refined,Wadler:2009:WPC} for 
+causing runtime type errors. Since \prog{add} is fully typed,
+its body should never be blamed for causing dynamic type errors.
+
+
+
+
+\section{Conclusion}
+
+Gradual typing has received a lot of attention in the past decade
+thanks to its promises of harmonizing static and dynamic typing. 
+However, a systematic study of the performance landscape for 
+gradual typing that supports fine-grained type annotations was 
+still missing. This work solves this issue through a systematic
+study of around 1.25 micro configurations that covers 
+all type variations across the untyped-typed spectrum of parameter types.
+%
+
+Based on this study, we extract several major perspectives
+regarding gradual typing performance. First, a small
+change of the type annotation for a certain parameter may 
+significantly change the performance, sometimes larger than 
+10 times. Second, making 
+types more static is strongly correlated to
+degrading program performance. These observations indicate that,
+while currently treated separately, program migration and
+program performance should be considered in unison in 
+future research in gradual typing. Also, better tooling support is needed
+for understanding, predicting, and optimizing fine-grained
+gradual typing to make it more practical. 
+
+Due to space limitation, several questions are left out
+for future investigation, such as under what context the type
+change for a parameter leads to more abrupt performance 
+swings. 
+
+%that inspire
+%future research of gradual typing. 
+%
+%
+%By allowing developers to incrementally introduce static typing into a dynamically typed codebase or relax strict type requirements in a statically typed language, gradual typing aims to improve developer productivity, code maintainability, and software reliability. 
+%
+%However, gradual typing also comes with certain limitations. The additional complexity introduced by the integration of static and dynamic typing may lead to overhead in terms of language complexity, compiler implementation, and runtime performance. Furthermore, gradual typing does not eliminate all runtime type errors, as it only provides partial type safety guarantees due to the presence of untyped code.
+%Despite these limitations, gradual typing has gained significant attention in both academia and industry, with languages like TypeScript, Racket, and Python(reticulated) incorporating support for gradual typing.
+
+%
+%\acks
+%
+%Acknowledgments, if needed.
+
+% We recommend abbrvnat bibliography style.
+
+% \bibliographystyle{abbrvnat}
+\bibliographystyle{splncs04}
+\bibliography{paper}
+
+% The bibliography should be embedded for final submission.
+
+\end{document}

@@ -1,0 +1,544 @@
+\newcommand{\compose}[2]{\ensuremath{#1 \circ #2}}
+%\newcommand{\dyn}{\ensuremath{\star}}
+\newcommand{\dyn}{\prog{Dyn}}
+\newcommand{\tyeqc}[3]{#2 \equiv_{#1} #3}
+
+\newcommand{\consistSym}{\ensuremath{\sim}}
+\newcommand{\consist}[2]{\ensuremath{#1 \consistSym #2}}
+\newcommand{\consistpi}[2]{\ensuremath{#1 \consistSym_{\pi} #2}}
+\newcommand{\consistc}[3]{\ensuremath{#2 \consistSym_{#1} #3}}
+\newcommand{\notconsist}[2]{\ensuremath{#1 \nsim #2}}
+
+\newcommand{\subttLft}{\ensuremath{\subtt_l}}
+\newcommand{\subttRgt}{\ensuremath{\subtt_r}}
+\newcommand{\subttMeg}{\ensuremath{\subtt_m}}
+
+\renewcommand{\to}{\ensuremath{\operatorname{\rightarrow}}}
+
+%\newcommand{\gTypes}{G}
+\newcommand{\meetSym}{\ensuremath{\sqcap}}
+\newcommand{\joinSym}{\ensuremath{\sqcup}}
+\newcommand{\meet}[2]{\ensuremath{#1 \sqcap #2}}
+\newcommand{\meetpi}[2]{\ensuremath{#1 \sqcap_{\pi} #2}}
+\newcommand{\meetpat}[3][\tp]{\ensuremath{#2 \sqcap_{#1} #3}}
+\newcommand{\join}[2]{\ensuremath{#1 \sqcup #2}}
+\newcommand{\joinpi}[2]{\ensuremath{#1 \sqcup_{\pi} #2}}
+\newcommand{\joinc}[3]{\ensuremath{#2 \sqcup_{#1} #3}}
+\newcommand{\meetDec}[2]{\ensuremath{#1 \wedge #2}}
+\newcommand{\joinDec}[2]{\ensuremath{#1 \vee #2}}
+
+\newcommand{\tvv}{\ensuremath{\beta}}
+\newcommand{\tvvf}{\ensuremath{\tvv_1}}
+\newcommand{\tvvs}{\ensuremath{\tvv_2}}
+\newcommand{\tvvt}{\ensuremath{\tvv_3}}
+
+\newcommand{\tvf}{\ensuremath{\tv_1}}
+\newcommand{\tvs}{\ensuremath{\tv_2}}
+\newcommand{\tvt}{\ensuremath{\tv_3}}
+\newcommand{\tvo}{\ensuremath{\tv_4}}
+
+\newcommand{\tvvv}{\ensuremath{\kappa}}
+\newcommand{\tvvvf}{\ensuremath{\tvvv_1}}
+\newcommand{\tvvvs}{\ensuremath{\tvvv_2}}
+\newcommand{\tvvvt}{\ensuremath{\tvvv_3}}
+\newcommand{\tvvvo}{\ensuremath{\tvvv_4}}
+
+\newcommand{\red}{\ensuremath{\delta}}
+
+\newcommandx{\hasTypeVGC}[4][1=\tp,2=\TypeEnv]{\OB{#2\vdash_C\ofType{#3}{#4}}}
+
+\newcommand{\ctxhole}{\,}
+\newcommand{\fillctx}[2][\vgt]{\ensuremath{#1[#2]}}
+
+\newcommand{\vconsistSym}{\ensuremath{\simeq}}
+\newcommand{\vconsist}[2]{\ensuremath{#1 \vconsistSym #2}}
+\newcommand{\dompi}[1]{\ensuremath{\OB{\textit{dom}_{\pi}(#1)}}}
+\newcommand{\domc}[2]{\ensuremath{\textit{dom}_{#1}(#2)}}
+\newcommand{\codpi}[1]{\ensuremath{\OB{\textit{cod}_{\pi}(#1)}}}
+\newcommand{\codc}[2]{\ensuremath{\textit{cod}_{#1}(#2)}}
+
+\newcommand{\cstdomNm}{\textit{domCst}}
+\newcommand{\cstdom}[1]{\ensuremath{\cstdomNm\,(#1)}}
+\newcommand{\cstcodNm}{\textit{codCst}}
+\newcommand{\cstcod}[1]{\ensuremath{\cstcodNm\,(#1)}}
+
+
+\newcommand{\conSet}{\ensuremath{C}}
+\newcommand{\conSetf}{\ensuremath{\conSet_1}}
+\newcommand{\conSets}{\ensuremath{\conSet_2}}
+\newcommand{\conSetsp}{\ensuremath{\conSet'_2}}
+\newcommand{\conSett}{\ensuremath{\conSet_3}}
+\newcommand{\conSeto}{\ensuremath{\conSet_4}}
+\newcommand{\conSeti}{\ensuremath{\conSet_5}}
+\newcommand{\conVars}{\ensuremath{\mathcal{X}}}
+\newcommand{\cSet}[1]{\ensuremath{\ \vert\ #1}}
+%\newcommand{\cSets}[2]{\ensuremath{\ \vert\ #1\ \vert\ #2}}
+\newcommand{\cSets}[2]{\ensuremath{\ \vert\ #1}}
+\newcommand{\FailC}{\prog{Fail}}
+\newcommand{\noCons}{\ensuremath{\varepsilon}}
+
+\newcommand{\op}{\textit{op}}
+\newcommand{\ef}{\ensuremath{e_1}}
+\newcommand{\es}{\ensuremath{e_2}}
+
+
+
+%\newcommand{\desc}{\ensuremath{\omega}}
+
+% in-line code
+\newcommand{\prog}[1]{{\progfontsize\texttt{#1}}}
+
+\newcommand{\progname}{f}
+\newcommand{\dyns}{\dyn{s}}
+
+\newcommand{\rowAtI}{\prog{rowAtI}}
+\newcommand{\rowAtIV}{\prog{\rowAtI{V}}}
+\newcommand{\rowAtISt}{\prog{rowAtISt}}
+\newcommand{\width}{\prog{width}}
+\newcommand{\widthV}{\prog{widthV}}
+\newcommand{\tableWidth}{\prog{tableWidth}}
+
+\newcommand{\textlambda}[2]{\prog{\textbackslash #1 -> #2}}
+
+\newcommand{\spectrum}{migration space}
+
+\newcommand{\keep}{\ensuremath{+}}
+\newcommand{\remove}{\ensuremath{-}}
+\newcommand{\remDyn}[5]{\ensuremath{#1\ #2\ #3\ #4\ #5}}
+\newcommand{\illtypedSym}{\ding{55}}
+\newcommand{\illtyped}{\multicolumn{13}{c}{\illtypedSym}}
+\newcommand{\correct}{\ding{51}}
+\renewcommand{\set}[1]{\ensuremath{\{#1\}}}
+
+\newcommand{\taname}{\textsc{Migrational}}
+
+
+
+\newcommand{\highleveltodo}{\NOTE{SC: Todos for Eric,
+
+Revise the abstract
+
+\medskip
+
+Revise the contributions in Section 1
+
+
+}}
+
+\newcommand{\proofreadingtodo}{\NOTE{SC: Proofreading check items
+
+Make sure the text before Section~\ref{sec:extension} doesn't talk about
+polymorphism.
+
+\medskip
+
+Add two references to the advantages of using static typing in 10.1.
+
+\medskip
+
+Double check the subscripts in Section 4.5, now seems to be messed up...
+
+\medskip
+
+Remove  and .
+
+\medskip
+
+Check the font of \otherwise
+
+}}
+
+\newcommand{\makespace}{\NOTE{SC: When look for space
+
+Remove the last paragraph in Section~\ref{sec:extension:mig}, which
+talks about type error debugging.
+}}
+
+
+\newcommand{\solveditems}{\NOTESolved{SC: Solved items
+
+Add a table that summarizes the introduction and uses of notations, definitions, relations...
+
+\medskip
+
+Look into the criteria for gradual typing given by Siek et al. (2015), and study the relation with our work. We don't want to look ignorant.
+
+\medskip
+
+In Section~\ref{sec:tpsys:syntax}, we said we use \tvv\ and \tvvv\
+for constraint generation and unification fresh type variables. Check
+the consistency
+}}
+
+
+
+\newcommand{\itgl}{ITGL}
+
+\newcommand{\staticer}{\ensuremath{\omega}}
+\newcommand{\staticera}{\ensuremath{\staticer_a}}
+\newcommand{\staticerb}{\ensuremath{\staticer_b}}
+\newcommand{\staticerc}{\ensuremath{\staticer_c}}
+\newcommand{\staticerf}{\ensuremath{\staticer_1}}
+\newcommand{\staticers}{\ensuremath{\staticer_2}}
+\newcommand{\staticert}{\ensuremath{\staticer_3}}
+\newcommand{\vstaticer}{\ensuremath{\Omega}}
+\newcommand{\vstaticerf}{\ensuremath{\vstaticer_1}}
+\newcommand{\vstaticers}{\ensuremath{\vstaticer_2}}
+\newcommand{\vstaticert}{\ensuremath{\vstaticer_3}}
+\newcommand{\vstaticera}{\ensuremath{\vstaticer_a}}
+\newcommand{\vstaticerb}{\ensuremath{\vstaticer_b}}
+
+
+\newcommand{\staticerName}{statifier}
+\newcommand{\StaticerName}{Statifier}
+\newcommand{\VstaticerName}{Variational statifier}
+\newcommand{\vstaticerName}{variational statifier}
+
+\newcommand{\rnPatOK}{\rn{Pat-Ok}}
+\newcommand{\rnPatErr}{\rn{Pat-Err}}
+\newcommand{\rnPatTrans}{\rn{Pat-Trans}}
+\newcommand{\rnPatSinChc}{\rn{Pat-SinChc}}
+\newcommand{\rnPatChcSin}{\rn{Pat-ChcSin}}
+\newcommand{\rnPatChcChc}{\rn{Pat-ChcChc}}
+
+\newcommand{\CSTR}{\rn{Con}}
+\newcommand{\VARR}{\rn{Var}}
+% \newcommand{\CONR}{\rn{Con}}
+%\newcommand{\UNBOUNDVR}{\rn{Unbound}}
+% \newcommand{\UNBOUNDCR}{\rn{Unbound-C}}
+\newcommand{\ABSR}{\rn{Abs}}
+\newcommand{\ABSANN}{\rn{AbsAnn}}
+\newcommand{\ABSDYN}{\rn{AbsDyn}}
+\newcommand{\ANN}{\rn{Ann}}
+\newcommand{\DYNANN}{\rn{DynAnn}}
+\newcommand{\APPR}{\rn{App}}
+\newcommand{\APPSKE}{\rn{AppSkn}}
+\newcommand{\LETR}{\rn{Let}}
+\newcommand{\IFR}{\rn{If}}
+%\newcommand{\CASER}{\rn{Case}}
+% PAT stands for pattern
+%\newcommand{\PATR}{\rn{Pat}}
+
+\newcommand{\WEAKENR}{\rn{Weaken}}
+%\newcommand{\MAINR}{\rn{Main}}
+
+\newcommand{\mergeSym}{\OB{\cup}}
+\newcommand{\MergeSym}{\OB{\bigcup}}
+%\renewcommand{\merge}[2]{\OB{#1 \mergeSym #2}}
+
+% consistency rule names
+\newcommand{\conRef}{C1}
+\newcommand{\conDynR}{C2}
+\newcommand{\conDynL}{C3}
+\newcommand{\conArr}{C4}
+
+%\newcommand{\newdim}[1]{\ensuremath{\exists\ #1}}
+\newcommand{\newdim}[1]{\ensuremath{#1\ \textit{fresh}}}
+
+
+\newcommand{\lessSym}{\ensuremath{\leq}}
+\newcommand{\less}[2]{\ensuremath{#1 \lessSym #2}}
+
+
+\newcommandx{\hasTypeR}[6][1=\cst,2=\tp,3=\CE,4=\TypeEnv]{\OB{\red;#4\vdash_{\textit{RED}}\ofType{#5}{#6}}}
+\newcommandx{\hasTypeG}[4][1=\staticer,2=\TypeEnv]{\OB{#1;#2\vdash_{\textit{GC}}\ofType{#3}{#4}}}
+\newcommandx{\hasTypeGD}[4][1=\staticer,2=\TypeEnv]{\OB{#1;#2\vdash_{\textit{GCD}}\ofType{#3}{#4}}}
+\newcommandx{\hasTypeI}[6][1=\cst,2=\tp,3=\CE,4=\TypeEnv]{\OB{#4\vdash_{\textit{ITSL}}\ofType{#5}{#6}}}
+\newcommandx{\hasTypeVG}[5][1=\vstaticer,2=\TypeEnv,3=\tp]{\OB{#3;#2\vdash\ofType{#4}{#5}\,|\, #1}}
+\newcommand{\hasTypeDName}{\ensuremath{\vdash_D}}
+\newcommandx{\hasTypeD}[5][1=\vstaticer,2=\TypeEnv,3=\tp]{\OB{#3;#2\hasTypeDName\ofType{#4}{#5}\,|\, #1}}
+
+
+
+\newcommand{\psucc}{\prog{succ}}
+\newcommand{\peven}{\prog{even}}
+\newcommand{\pone}{\prog{1}}
+\newcommand{\vfun}{\prog{vfun}}
+
+\newcommand{\seltor}{\ensuremath{s}}
+\newcommand{\desc}{\ensuremath{\delta}}
+\newcommand{\descf}{\ensuremath{\desc_1}}
+\newcommand{\descs}{\ensuremath{\desc_2}}
+\newcommand{\desca}{\ensuremath{\desc_c}}
+\newcommand{\descb}{\ensuremath{\desc_b}}
+\newcommand{\descab}{\ensuremath{\desc_{ab}}}
+\newcommand{\descc}{\ensuremath{\desc_a}}
+\newcommand{\descd}{\ensuremath{\desc_d}}
+\newcommand{\validelim}{\ensuremath{\desc^v}}
+\newcommand{\validelimf}{\ensuremath{\validelim_1}}
+\newcommand{\validelims}{\ensuremath{\validelim_2}}
+\newcommand{\validelimt}{\ensuremath{\validelim_3}}
+\newcommand{\validelima}{\ensuremath{\validelim_a}}
+\newcommand{\validelimab}{\ensuremath{\validelim_{ab}}}
+\newcommand{\validelimae}{\ensuremath{\validelim_{ae}}}
+\newcommand{\validelimb}{\ensuremath{\validelim_b}}
+\newcommand{\validelimc}{\ensuremath{\validelim_c}}
+\newcommand{\validelimm}{\ensuremath{\validelim_m}}
+\newcommand{\validelimn}{\ensuremath{\validelim_n}}
+\newcommand{\validelimo}{\ensuremath{\validelim_o}}
+\newcommand{\validelimp}{\ensuremath{\validelim_p}}
+
+\newcommand{\formSel}[2][\dmv]{\ensuremath{#1.#2}}
+
+\newcommand{\e}{\ensuremath{e}}
+
+\newcommand{\migrational}{migrational}
+
+\newcommand{\compatible}{compatible}
+\newcommand{\compatibility}{compatibility}
+\newcommand{\Compatibility}{Compatibility}
+\newcommand{\tycompSym}{\ensuremath{\approx}}
+\newcommand{\tycomp}[2]{\ensuremath{#1 \tycompSym #2}}
+%\newcommandx{\tycompc}[3][1=\tp]{\ensuremath{#2 \tycompSym_{#1}^? #3}}
+\newcommandx{\tycompc}[3][1=\tp]{\ensuremath{#2 \tycompSym^? #3}}
+\newcommand{\comperr}[2]{\ensuremath{#1 \tycompSym_\err #2}}
+\newcommand{\tycomppat}[3][\tp]{\ensuremath{#2 \tycompSym_{#1} #3}}
+
+\newcommand{\dompat}[2][\tp]{\ensuremath{\domSym_{#1}(#2)}}
+\newcommand{\codpat}[2][\tp]{\ensuremath{\codSym_{#1}(#2)}}
+
+\newcommand{\typerep}[1]{\ensuremath{#1}}
+
+\newcommand{\patconstrained}{pattern-constrained}
+\newcommand{\PatConstrained}{Pattern-Constrained}
+\newcommand{\Patconstrained}{Pattern-constrained}
+
+% For the Type System Section
+
+\newcommand{\st}{\OB{T}}
+\newcommand{\gTypes}{\ensuremath{G}}
+
+\newcommand{\vtf}{\OB{\vt_1}}
+\newcommand{\vts}{\OB{\vt_2}}
+\newcommand{\vtt}{\OB{\vt_3}}
+
+\newcommand{\vgt}{\OB{M}}
+\newcommand{\vgtf}{\OB{\vgt_1}}
+\newcommand{\vgts}{\OB{\vgt_2}}
+\newcommand{\vgtt}{\OB{\vgt_3}}
+
+\newcommand{\gt}{\gTypes}
+\newcommand{\gtf}{\ensuremath{\gt_1}}
+\newcommand{\gts}{\ensuremath{\gt_2}}
+\newcommand{\gtt}{\ensuremath{\gt_3}}
+
+\newcommand{\gvt}{\vgt}
+\newcommand{\vgta}{\ensuremath{\vgt_a}}
+\newcommand{\vgtb}{\ensuremath{\vgt_b}}
+\newcommand{\vgtc}{\ensuremath{\vgt_c}}
+\newcommand{\vgtdp}{\ensuremath{\vgt_{dp}}}
+
+\newcommand{\loc}{\ensuremath{\ell}}
+\newcommand{\locateName}{\textit{loc}}
+\newcommand{\locate}[2][{}]{\ensuremath{\locateName_{#1}(#2)}}
+
+\newcommand{\prodSym}{\ensuremath{\hookrightarrow}}
+\newcommand{\produces}[2]{\ensuremath{#1 \prodSym #2}}
+
+\newcommand{\allchcs}{\ensuremath{\mathcal{D}}}
+\newcommand{\allchcstp}{\ensuremath{\allchcs_{\tp}}}
+
+\newcommand{\remainDyn}{\ensuremath{\desc^1}}
+
+\newcommand{\tighterName}{stricter}
+\newcommand{\tightestName}{strictest}
+\newcommand{\tightness}{strictness}
+
+\newcommand{\tightSym}{\ensuremath{\gg}}
+\newcommand{\tight}[3][{}]{\ensuremath{#2 #1\tightSym #3}}
+
+\newcommand{\allsnds}[1]{\ensuremath{#1|_2}}
+\newcommand{\allfsts}[1]{\ensuremath{#1|_1}}
+
+%\newcommand{\genStaticer}[2]{\ensuremath{#1(#2)}}
+\newcommand{\genStaticer}[2]{\ensuremath{\textit{statifierForDesc}\,(#1,#2)}}
+
+\newcommand{\genDynamicer}[2]{\ensuremath{#1{[}#2{]}}}
+\newcommand{\chcFromLoc}[1]{\ensuremath{\textit{chc}(#1)}}
+
+\newcommand{\chcAf}[1]{\ensuremath{\chc[A_1]{#1}}}
+\newcommand{\chcAs}[1]{\ensuremath{\chc[A_2]{#1}}}
+
+
+\newcommand{\preciseSym}{\ensuremath{\sqsubseteq}}
+\newcommand{\precise}[2]{\ensuremath{#1 \preciseSym #2}}
+
+\newcommand{\betterSym}{\ensuremath{\preceq}}
+\newcommand{\nbetterSym}{\ensuremath{\npreceq}}
+\newcommand{\better}[3][{}]{\ensuremath{#2 #1\betterSym #3}}
+\newcommand{\notBetter}[3][{}]{\ensuremath{#2 #1\nbetterSym #3}}
+
+\newcommand{\statify}{statify}
+%\newcommand{\statifying}{statifying}
+%\newcommand{\Statifying}{Statifying}
+%\newcommand{\beststatifying}{maximally statifying}
+\newcommand{\x}{\ensuremath{x}}
+
+\newcommand{\fixed}{\prog{fixed}}
+\newcommand{\widthFunc}{\prog{widthFunc}}
+
+\newcommand{\tpc}{\ensuremath{\tp_a}}
+\newcommand{\tpa}{\ensuremath{\tp'_a}}
+\newcommand{\tpb}{\ensuremath{\tp_b}}
+\newcommand{\tpd}{\ensuremath{\tp_c}}
+\newcommand{\tppat}{\ensuremath{\tp_a}}
+\newcommand{\descref}{\ensuremath{\desc_r}}
+\newcommand{\tpref}{\ensuremath{\tp_r}}
+\newcommand{\notdescref}{\ensuremath{\desc_{\neg r}}}
+\newcommand{\nottpref}{\ensuremath{\tp_{\neg r}}}
+
+
+\newcommand{\expanddesc}[2]{\ensuremath{\textit{expand}\,(#1,#2)}}
+\newcommand{\expanddescName}{\textit{expand}}
+
+\newcommand{\simplifySym}{\ensuremath{\leadsto}}
+\newcommand{\simplify}[2]{\ensuremath{#1 \simplifySym #2}}
+\newcommand{\chcNames}[1]{\ensuremath{\textit{cnames}(#1)}}
+
+\newcommand{\collectveName}{\textit{ve}}
+\newcommand{\collectve}[1]{\ensuremath{\collectveName\,(#1)}}
+\newcommand{\collectmveName}{\textit{mve}}
+\newcommand{\collectmve}[1]{\ensuremath{\collectmveName\,(#1)}}
+
+\newcommand{\NOTESolved}[1]{}
+%\newcommand{\NOTESolved}[1]{\NOTE{#1}}
+
+\newcommand{\inferName}{\textit{infer}}
+\newcommand{\inferr}[2][\TypeEnv]{\ensuremath{\inferName\,(#1,#2)}}
+
+\newcommand{\as}[2]{\ensuremath{#1\, \text{::}\, #2}}
+\newcommand{\letpoly}{let-polymorphism}
+
+\newcommand{\pt}{\ensuremath{P}}
+
+\newcommand{\timeout}{--}
+
+\newcommand{\mgs}{MGSM}
+\renewcommand{\mgl}{MGDM}
+
+\newcommand{\const}{\ensuremath{C}}
+\newcommand{\constf}{\ensuremath{\const_1}}
+\newcommand{\consts}{\ensuremath{\const_2}}
+
+\newcommand{\produceSym}{\ensuremath{\hookrightarrow}}
+
+\newcommand{\ctp}{\ensuremath{\conSet_\tp}}
+
+
+\newcommand{\emptyConst}{\ensuremath{\varepsilon}}
+
+\newcommand{\patandSym}{\ensuremath{\sqcap}}
+\newcommand{\patand}[2]{\ensuremath{#1 \patandSym #2}}
+\newcommand{\patorSym}{\ensuremath{\sqcup}}
+\newcommand{\pator}[2]{\ensuremath{#1 \patorSym #2}}
+\newcommand{\andcSym}{\ensuremath{\wedge}}
+\newcommand{\andc}[2]{\ensuremath{#1 \andcSym #2}}
+
+\newcommand{\mergeSubName}{\textit{merge}}
+\newcommand{\getName}{\textit{get}}
+
+
+
+\newcommand{\vRefl}{\rn{VT-Ref}}
+\newcommand{\vSym}{\rn{VT-Sym}}
+\newcommand{\vTrans}{\rn{VT-Trans}}
+\newcommand{\vDup}{\rn{VT-Idemp}}
+\newcommand{\vPoint}{\rn{VT-DeadElim}}
+\newcommand{\vCong}{\rn{VT-Cong}}
+\newcommand{\vChoice}{\rn{VT-Choice}}
+\newcommand{\vFun}{\rn{VT-Fun}}
+
+\newcommand{\patcomp}{\rn{PatComp}}
+\newcommand{\pattyping}{\rn{PatTyping}}
+\newcommand{\patunary}{\rn{PatUnary}}
+\newcommand{\patbinary}{\rn{PatBinary}}
+
+\newcommand{\selOrd}{\textit{Selection ordering is irrelevant}}
+\newcommand{\elimD}{\textit{Eliminating d}}
+\newcommand{\selDef}{\textit{Definition of } \tsel[\desc]{\cdot}}
+\newcommand{\selIdem}{\textit{Selection is idempotent}}
+
+\newcommand{\selEnv}[1]{\tsel[#1]{\TypeEnv}}
+\newcommand{\selHelp}[2]{\tsel[#1]{#2}}
+
+\newcommand{\numChcs}{\ensuremath{C_v}}
+\newcommand{\numFuncs}{\ensuremath{C_f}}
+\newcommand{\numPair}{\ensuremath{(\numChcs,\numFuncs)}}
+
+\newcommand{\TypeWhich}{TypeWhich}
+\newcommand{\MGT}{MGT}
+\newcommand{\MaxMigrate}{MaxMigrate}
+\newcommand{\ThisTool}{PiMigrate}
+\newcommand{\callTwice}{\prog{callTwice}}
+\newcommand{\callTwiceNoDyn}{\prog{callTwiceNoDyn}}
+\newcommand{\callTwiceLam}{\prog{callTwiceLam}}
+\newcommand{\gc}{gradual concretization}
+\newcommand{\Gc}{gradual concretization}
+\newcommand{\ms}{maintaining staticity}
+\newcommand{\Ms}{Maintaining staticity}
+
+\newcommand{\callTwiceLamBody}{\ensuremath{\lamannot{f}{\dyn}{f\ 1 + f\ \prog{True}}}}
+
+\newcommand{\xmark}{\ding{55}}
+
+\newcommand{\maximalmg}{\text{maximal migration}}
+\newcommand{\Maximalmg}{\text{Maximal migration}}
+\newcommand{\maximalmgs}{\text{maximal migrations}}
+\newcommand{\Maximalmgs}{\text{Maximal migrations}}
+
+\newcommand{\singlequote}[1]{\textquotesingle#1\textquotesingle}
+\newcommand{\doublequote}[1]{\prog{\textquotedblright #1\textquotedblright} }
+
+\newcommand{\String}{\prog{String}}
+
+\newcommand{\lamannot}[3]{\ensuremath{\lambda #1\, \text{:} #2.#3}}
+\newcommand{\dynparIll}{\lamannot{x}{\dyn}{x\, (\psucc\ (x\ \tru))}}
+\newcommand{\dynparWell}{\lamannot{x}{\dyn}{\psucc\ (x\ \tru)}}
+
+\newcommand{\allLeavesDynTvsNm}{\textit{AllLvsDynMvs}}
+\newcommand{\allLeavesDynTvs}[1]{\ensuremath{\allLeavesDynTvsNm\,(#1)}}
+\newcommand{\pri}[1]{\ensuremath{#1'}}
+\newcommand{\subtta}{\ensuremath{\subtt_a}}
+
+\newcommand{\subttff}{\ensuremath{\subtt_{11}}}
+\newcommand{\subttfs}{\ensuremath{\subtt_{12}}}
+\newcommand{\subttft}{\ensuremath{\subtt_{13}}}
+\newcommand{\subttfo}{\ensuremath{\subtt_{14}}}
+\newcommand{\subttffp}{\ensuremath{\subtt'_{11}}}
+\newcommand{\subttfsp}{\ensuremath{\subtt'_{12}}}
+\newcommand{\subttftp}{\ensuremath{\subtt'_{13}}}
+\newcommand{\subttfop}{\ensuremath{\subtt'_{14}}}
+\newcommand{\tpff}{\ensuremath{\tp_{11}}}
+\newcommand{\tpfs}{\ensuremath{\tp_{12}}}
+\newcommand{\tpft}{\ensuremath{\tp_{13}}}
+\newcommand{\tpfo}{\ensuremath{\tp_{14}}}
+\newcommand{\vta}{\ensuremath{\vt_a}}
+\newcommand{\vtb}{\ensuremath{\vt_b}}
+
+\newcommand{\orTypeSym}{\ensuremath{|}}
+\newcommand{\orType}[2]{\ensuremath{\textit{or}\,(#1,#2)}}
+
+\newcommand{\cfname}{type compatibility}
+\newcommand{\csnames}{error tolerance}
+\newcommand{\ctname}{best typing}
+\newcommand{\coname}{migration extraction}
+\newcommand{\ciname}{type inference}
+
+\newcommand{\subttf}{\OB{\subtt_1}}
+\newcommand{\subtts}{\OB{\subtt_2}}
+
+\newcommand{\middleConfig}{intermediate configuration}
+\newcommand{\middleConfigs}{intermediate configurations}
+\newcommand{\MiddleConfigs}{Intermediate configurations}
+\newcommand{\outlyingConfig}{outlying configuration}
+\newcommand{\outlyingConfigs}{outlying configurations}
+\newcommand{\OutlyingConfigs}{Outlying configurations}
+
+\newcommand{\listContent}{\prog{[[1],[2,3],[4,5,6]]}}
+\newcommand{\listContentNm}{\prog{cont}}
+\newcommand{\curWidest}{\prog{cw}}
+\newcommand{\myreducef}{\prog{reduce1}}
+\newcommand{\myreduces}{\prog{reduce2}}
+\newcommand{\myreduce}{\prog{reduce}}
+\newcommand{\numberofbecnhmark}{eight(8) }
+\newcommand{\pascalsym}{\prog{pascal_sym}}
